@@ -8,14 +8,17 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 
 interface Props {
-  params: {
+  // In Next.js 15+ dynamic route params are async — they're a Promise that
+  // must be awaited (or unwrapped with React.use in Client Components).
+  params: Promise<{
     category: string
     slug: string
-  }
+  }>
 }
 
 export default async function ActivityDetail({ params }: Props) {
-  const activity = await client.fetch(activityBySlugQuery, { slug: params.slug })
+  const { slug } = await params
+  const activity = await client.fetch(activityBySlugQuery, { slug })
 
   if (!activity) {
     notFound()
