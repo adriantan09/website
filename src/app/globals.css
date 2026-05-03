@@ -42,6 +42,13 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /*
+   * Defence in depth: if any single descendant overflows the viewport (long
+   * unbreakable text, oversized media, etc.) don't let it break the whole
+   * page's horizontal layout on mobile. Individual sections are responsible
+   * for staying inside `.container` first.
+   */
+  overflow-x: hidden;
 }
 
 /*
