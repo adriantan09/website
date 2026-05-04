@@ -1,6 +1,6 @@
 import { client, urlFor } from '@/sanity/client'
 import { siteSettingsQuery } from '@/sanity/queries'
-import { RichText } from '@/components/ui/rich-text'
+import { BodyRenderer } from '@/components/ui/body-renderer'
 import Image from 'next/image'
 
 export default async function AboutPage() {
@@ -30,7 +30,7 @@ export default async function AboutPage() {
             About
           </h1>
           {settings?.authorBio ? (
-            <RichText value={settings.authorBio} />
+            <BodyRenderer body={settings.authorBio} />
           ) : (
             <p className="text-lg text-muted-foreground leading-relaxed">
               Software engineer by day, outdoor enthusiast by night. I love exploring 

@@ -2,9 +2,9 @@ import { client, urlFor } from '@/sanity/client'
 import { activityBySlugQuery } from '@/sanity/queries'
 import { HeroStats } from '@/components/ui/hero-stats'
 import { MapEmbed } from '@/components/ui/map-embed'
-import { RichText } from '@/components/ui/rich-text'
-import { MediaGallery } from '@/components/ui/media-gallery'
+import { BodyRenderer } from '@/components/ui/body-renderer'
 import Image from 'next/image'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 interface Props {
@@ -41,8 +41,17 @@ export default async function ActivityDetail({ params }: Props) {
         <div className="absolute bottom-12 left-0 w-full">
           <div className="container">
             <div className="max-w-3xl">
+              {activity.parentCollection && (
+                <Link
+                  href={`/collections/${activity.parentCollection.slug.current}`}
+                  className="inline-block text-xs font-semibold uppercase tracking-[0.3em] mb-3 text-foreground/80 hover:text-foreground underline-offset-4 hover:underline"
+                >
+                  ← Part of: {activity.parentCollection.title}
+                </Link>
+              )}
               <p className="text-sm font-semibold uppercase tracking-[0.3em] mb-4 text-foreground/80">
                 {activity.category} {activity.subCategory && `• ${activity.subCategory}`}
+                {activity.location && ` • ${activity.location}`}
               </p>
               <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4 leading-tight">
                 {activity.title}
@@ -60,9 +69,17 @@ export default async function ActivityDetail({ params }: Props) {
       </div>
 
       <div className="container">
+        {activity.excerpt && (
+          <div className="max-w-3xl mx-auto mb-12">
+            <p className="text-xl md:text-2xl leading-relaxed text-muted-foreground">
+              {activity.excerpt}
+            </p>
+          </div>
+        )}
+
         <div className="max-w-3xl mx-auto">
           {/* Stats */}
-          <HeroStats 
+          <HeroStats
             distance={activity.stats?.distance}
             elevation={activity.stats?.elevation}
             duration={activity.stats?.duration}
@@ -97,22 +114,10 @@ export default async function ActivityDetail({ params }: Props) {
               </div>
             </div>
           )}
-
-          {/* Notes */}
-          {activity.content && (
-            <div className="my-12">
-              <RichText value={activity.content} />
-            </div>
-          )}
         </div>
 
-        {/* Photo Gallery (Full width of container) */}
-        {activity.gallery && activity.gallery.length > 0 && (
-          <div className="mt-20">
-            <h2 className="text-[10px] uppercase tracking-[0.2em] font-bold mb-8 text-center">Gallery</h2>
-            <MediaGallery images={activity.gallery} />
-          </div>
-        )}
+        {/* Interleaved body: prose, section headings, galleries, pull quotes */}
+        <BodyRenderer body={activity.body} />
       </div>
     </article>
   )
