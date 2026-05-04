@@ -27,6 +27,49 @@ export function ActivityCard({ activity }: { activity: any }) {
   )
 }
 
+export function CollectionCard({ collection }: { collection: any }) {
+  const start = collection.startDate ? new Date(collection.startDate) : null
+  const end = collection.endDate ? new Date(collection.endDate) : null
+  const dateLabel = (() => {
+    if (!start) return null
+    if (end && end.getFullYear() !== start.getFullYear()) {
+      return `${start.getFullYear()}–${end.getFullYear()}`
+    }
+    return String(start.getFullYear())
+  })()
+
+  return (
+    <Link
+      href={`/collections/${collection.slug.current}`}
+      className="group block"
+    >
+      <div className="relative aspect-[3/2] overflow-hidden bg-muted rounded-sm mb-4">
+        {collection.coverImage && (
+          <Image
+            src={urlFor(collection.coverImage).width(1200).url()}
+            alt={collection.title}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        )}
+        <div className="absolute top-3 left-3 px-2 py-1 bg-background/80 backdrop-blur-sm rounded-sm">
+          <span className="text-[10px] uppercase tracking-[0.2em] font-semibold">
+            Collection
+          </span>
+        </div>
+      </div>
+      <div className="space-y-1">
+        <h3 className="text-base font-semibold tracking-tight">{collection.title}</h3>
+        <p className="text-xs text-muted-foreground">
+          {[dateLabel, collection.location, collection.activityCount != null && `${collection.activityCount} activit${collection.activityCount === 1 ? 'y' : 'ies'}`]
+            .filter(Boolean)
+            .join(' • ')}
+        </p>
+      </div>
+    </Link>
+  )
+}
+
 export function ProjectCard({ project }: { project: any }) {
   return (
     <a 

@@ -9,6 +9,7 @@ const navLinks = [
   { name: 'Hikes', href: '/hiking' },
   { name: 'Cycling', href: '/cycling' },
   { name: 'Travels', href: '/travel' },
+  { name: 'Collections', href: '/collections' },
   { name: 'About', href: '/about' },
 ]
 
