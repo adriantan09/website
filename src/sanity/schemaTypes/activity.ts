@@ -54,6 +54,19 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'location',
+      title: 'Location (optional)',
+      type: 'string',
+      description: 'e.g. "Franz Josef, New Zealand"',
+    }),
+    defineField({
+      name: 'excerpt',
+      title: 'Excerpt / Subtitle',
+      type: 'text',
+      rows: 3,
+      description: 'Short blurb shown on cards and at top of detail page.',
+    }),
+    defineField({
       name: 'mainImage',
       title: 'Main image',
       type: 'image',
@@ -83,7 +96,7 @@ export default defineType({
       name: 'multiDayBreakdown',
       title: 'Multi-day Breakdown',
       type: 'array',
-      hidden: ({ document }) => (document?.stats as any)?.days <= 1,
+      hidden: ({ document }) => ((document?.stats as any)?.days ?? 0) <= 1,
       of: [
         {
           type: 'object',
@@ -104,21 +117,16 @@ export default defineType({
       description: 'Strava, RideWithGPS, AllTrails, etc. (Share/Embed link)',
     }),
     defineField({
-      name: 'content',
-      title: 'Notes',
-      type: 'array',
-      of: [{ type: 'block' }],
-    }),
-    defineField({
-      name: 'gallery',
-      title: 'Gallery',
+      name: 'body',
+      title: 'Body',
+      description:
+        'Interleave text, section headings, image galleries, and pull quotes in any order.',
       type: 'array',
       of: [
-        {
-          type: 'image',
-          options: { hotspot: true },
-          fields: [{ name: 'alt', type: 'string', title: 'Alt Text' }],
-        },
+        { type: 'block' },
+        { type: 'sectionHeadingBlock' },
+        { type: 'galleryBlock' },
+        { type: 'pullQuoteBlock' },
       ],
     }),
   ],
