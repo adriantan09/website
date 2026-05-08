@@ -9,7 +9,6 @@ const navLinks = [
   { name: 'Hikes', href: '/hiking' },
   { name: 'Cycling', href: '/cycling' },
   { name: 'Travels', href: '/travel' },
-  { name: 'Collections', href: '/collections' },
   { name: 'About', href: '/about' },
 ]
 
@@ -20,7 +19,7 @@ export function Header() {
   useEffect(() => setMounted(true), [])
 
   return (
-    <header className="py-8 sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/40">
+    <header className="py-4 sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border/40">
       <div className="container flex items-center justify-between">
         <Link href="/" className="text-xl font-bold tracking-tighter">
           ADRIAN TAN
