@@ -18,22 +18,27 @@
     'Geist', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
+/*
+ * A warm beige "paper" base with a sycamore-green accent. Dark mode mirrors
+ * the same warmth via a deep espresso background, so the site keeps a single
+ * identity across themes rather than flipping to a cold neutral at night.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #111111;
-  --muted: #f5f5f5;
-  --muted-foreground: #666666;
-  --border: #e5e5e5;
-  --accent: #000000;
+  --background: #f7f2ed;        /* Dawn Pink — warm beige paper */
+  --foreground: #2a2a28;        /* warm near-black for body text */
+  --muted: #ede6dc;             /* slightly deeper beige for cards/surfaces */
+  --muted-foreground: #6b675f;  /* warm grey for secondary text */
+  --border: #e3dccf;            /* subtle beige hairline */
+  --accent: #76923b;            /* Sycamore green accent */
 }
 
 [data-theme='dark'] {
-  --background: #0a0a0a;
-  --foreground: #eeeeee;
-  --muted: #1a1a1a;
-  --muted-foreground: #a0a0a0;
-  --border: #222222;
-  --accent: #ffffff;
+  --background: #1a1714;        /* deep warm espresso, not flat black */
+  --foreground: #ede6dc;        /* the light-mode beige, now as text */
+  --muted: #24201c;             /* raised warm surface */
+  --muted-foreground: #a8a195;  /* warm muted beige-grey */
+  --border: #332e28;            /* low-contrast warm border */
+  --accent: #a8c46a;            /* brighter sycamore tuned for dark bg */
 }
 
 body {
