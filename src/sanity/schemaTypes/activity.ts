@@ -4,6 +4,11 @@ export default defineType({
   name: 'activity',
   title: 'Activity',
   type: 'document',
+  description:
+    'An activity (hike, ride, trip…). Activities can optionally contain ' +
+    'other activities — e.g. a "Japan" activity that contains rides in ' +
+    'Hokkaido and Kyoto. Child activity URLs are nested under the parent ' +
+    '(e.g. /japan/hokkaido).',
   fields: [
     defineField({
       name: 'title',
@@ -25,6 +30,9 @@ export default defineType({
       name: 'category',
       title: 'Category',
       type: 'string',
+      description:
+        'Optional. Container activities (those with child activities) ' +
+        'do not need a category. Standalone activities should set one.',
       options: {
         list: [
           { title: 'Hiking', value: 'hiking' },
@@ -32,7 +40,6 @@ export default defineType({
           { title: 'Travel', value: 'travel' },
         ],
       },
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'subCategory',
@@ -60,13 +67,6 @@ export default defineType({
       description: 'e.g. "Franz Josef, New Zealand"',
     }),
     defineField({
-      name: 'excerpt',
-      title: 'Excerpt / Subtitle',
-      type: 'text',
-      rows: 3,
-      description: 'Short blurb shown on cards and at top of detail page.',
-    }),
-    defineField({
       name: 'mainImage',
       title: 'Main image',
       type: 'image',
@@ -82,50 +82,49 @@ export default defineType({
       ],
     }),
     defineField({
-      name: 'stats',
-      title: 'Statistics',
-      type: 'object',
-      fields: [
-        { name: 'distance', title: 'Total Distance (km)', type: 'number' },
-        { name: 'elevation', title: 'Total Elevation (m)', type: 'number' },
-        { name: 'duration', title: 'Total Duration', type: 'string', description: 'e.g. 5h 30m' },
-        { name: 'days', title: 'Number of Days', type: 'number', initialValue: 1 },
-      ],
+      name: 'childActivities',
+      title: 'Child activities (in display order)',
+      description:
+        'If this activity is a "container" (e.g. a multi-day trip or a ' +
+        'themed grouping), add the child activities here. Their URLs will ' +
+        'be nested under this activity\'s slug.',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'activity' }] }],
+      validation: (Rule) =>
+        Rule.unique().error('Each activity can only be referenced once.'),
     }),
     defineField({
-      name: 'multiDayBreakdown',
-      title: 'Multi-day Breakdown',
+      name: 'keyStats',
+      title: 'Key Stats',
+      description:
+        'Shown as a row of label/value pairs beneath the hero image. ' +
+        'E.g. { label: "Distance", value: "142 km" } or { label: "Date", value: "Apr 25, 2026" }. ' +
+        'Add as many as you like — they will display in the order entered.',
       type: 'array',
-      hidden: ({ document }) => ((document?.stats as any)?.days ?? 0) <= 1,
       of: [
         {
           type: 'object',
           fields: [
-            { name: 'day', title: 'Day Number', type: 'number' },
-            { name: 'distance', title: 'Distance (km)', type: 'number' },
-            { name: 'duration', title: 'Duration', type: 'string' },
-            { name: 'notes', title: 'Daily Notes', type: 'string' },
-            { name: 'campSite', title: 'Camp Site / Stop', type: 'string' },
+            { name: 'label', title: 'Label', type: 'string', description: 'e.g. Distance, Date, Elevation' },
+            { name: 'value', title: 'Value', type: 'string', description: 'e.g. 142 km, Apr 25 2026, 2400 m' },
           ],
+          preview: {
+            select: { title: 'label', subtitle: 'value' },
+          },
         },
       ],
-    }),
-    defineField({
-      name: 'embedUrl',
-      title: 'Map Embed URL',
-      type: 'url',
-      description: 'Strava, RideWithGPS, AllTrails, etc. (Share/Embed link)',
     }),
     defineField({
       name: 'body',
       title: 'Body',
       description:
-        'Interleave text, section headings, image galleries, and pull quotes in any order.',
+        'Interleave text, section headings, image galleries, map embeds, and pull quotes in any order.',
       type: 'array',
       of: [
         { type: 'block' },
         { type: 'sectionHeadingBlock' },
-        { type: 'galleryBlock' },
+        { type: 'photoGroup' },
+        { type: 'mapEmbedBlock' },
         { type: 'pullQuoteBlock' },
       ],
     }),
@@ -135,10 +134,14 @@ export default defineType({
       title: 'title',
       category: 'category',
       media: 'mainImage',
+      childCount: 'childActivities.length',
     },
-    prepare(selection) {
-      const { category } = selection
-      return { ...selection, subtitle: category }
+    prepare({ title, category, media, childCount }) {
+      const subtitleParts = [
+        category,
+        childCount ? `${childCount} child activit${childCount === 1 ? 'y' : 'ies'}` : null,
+      ].filter(Boolean)
+      return { title, subtitle: subtitleParts.join(' • '), media }
     },
   },
 })

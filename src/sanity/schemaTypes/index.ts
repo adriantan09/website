@@ -1,17 +1,17 @@
 import activity from './activity'
-import collection from './collection'
 import project from './project'
 import siteSettings from './siteSettings'
-import galleryBlock from './blocks/galleryBlock'
+import photoGroupBlock from './blocks/photoGroupBlock'
 import sectionHeadingBlock from './blocks/sectionHeadingBlock'
 import pullQuoteBlock from './blocks/pullQuoteBlock'
+import mapEmbedBlock from './blocks/mapEmbedBlock'
 
 export const schemaTypes = [
   activity,
-  collection,
   project,
   siteSettings,
-  galleryBlock,
+  photoGroupBlock,
   sectionHeadingBlock,
   pullQuoteBlock,
+  mapEmbedBlock,
 ]
