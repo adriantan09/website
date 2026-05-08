@@ -1,10 +1,11 @@
-import { client, urlFor } from '@/sanity/client'
+import { urlFor } from '@/sanity/client'
+import { sanityFetch } from '@/sanity/fetch'
 import { siteSettingsQuery } from '@/sanity/queries'
 import { BodyRenderer } from '@/components/ui/body-renderer'
 import Image from 'next/image'
 
 export default async function AboutPage() {
-  const settings = await client.fetch(siteSettingsQuery)
+  const settings = await sanityFetch<any>({ query: siteSettingsQuery })
 
   return (
     <div className="container py-24">

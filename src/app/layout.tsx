@@ -3,6 +3,7 @@ import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
+import { DraftModeBanner } from '@/components/ui/draft-mode-banner'
 
 export const metadata: Metadata = {
   title: 'Adrian Tan | Activities Portfolio',
@@ -28,6 +29,7 @@ export default function RootLayout({
             <main className="flex-grow">{children}</main>
             <Footer />
           </div>
+          <DraftModeBanner />
         </ThemeProvider>
       </body>
     </html>

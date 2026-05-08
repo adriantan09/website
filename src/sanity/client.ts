@@ -19,11 +19,36 @@ if (!dataset) {
   )
 }
 
+export const apiVersion = '2024-05-01'
+
+/**
+ * Public-facing client used for published content. Reads from Sanity's CDN
+ * is disabled so that revalidation tags / on-publish webhooks reflect new
+ * content immediately rather than getting stale-cached copies.
+ */
 export const client = createClient({
   projectId,
   dataset,
-  apiVersion: '2024-05-01',
-  useCdn: false, // Set to false for ISR or tags
+  apiVersion,
+  useCdn: false,
+  perspective: 'published',
+})
+
+/**
+ * Preview/draft client used when Next.js Draft Mode is active. Requires a
+ * Sanity API token with at least Viewer access (drafts are not public).
+ *
+ * The token is read at request time so the public client doesn't need it.
+ * If the token is missing we fall back to the public client; previewing
+ * drafts will simply show published content rather than crash.
+ */
+export const previewClient = createClient({
+  projectId,
+  dataset,
+  apiVersion,
+  useCdn: false,
+  perspective: 'previewDrafts',
+  token: process.env.SANITY_API_READ_TOKEN,
 })
 
 const builder = imageUrlBuilder(client)

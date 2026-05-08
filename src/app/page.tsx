@@ -1,11 +1,11 @@
-import { client } from '@/sanity/client'
+import { sanityFetch } from '@/sanity/fetch'
 import { recentActivitiesQuery, projectsQuery } from '@/sanity/queries'
 import { ActivityCard, ProjectCard } from '@/components/ui/cards'
 import Link from 'next/link'
 
 export default async function Home() {
-  const activities = await client.fetch(recentActivitiesQuery)
-  const projects = await client.fetch(projectsQuery)
+  const activities = await sanityFetch<any[]>({ query: recentActivitiesQuery })
+  const projects = await sanityFetch<any[]>({ query: projectsQuery })
 
   return (
     <div className="container py-12 md:py-24">

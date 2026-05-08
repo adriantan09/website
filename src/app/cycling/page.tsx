@@ -1,9 +1,12 @@
-import { client } from '@/sanity/client'
+import { sanityFetch } from '@/sanity/fetch'
 import { activitiesByCategoryQuery } from '@/sanity/queries'
 import { ActivityListPage } from '@/components/layout/activity-list-page'
 
 export default async function CyclingPage() {
-  const activities = await client.fetch(activitiesByCategoryQuery, { category: 'cycling' })
+  const activities = await sanityFetch<any[]>({
+    query: activitiesByCategoryQuery,
+    params: { category: 'cycling' },
+  })
 
   return (
     <ActivityListPage 

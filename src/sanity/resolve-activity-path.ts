@@ -1,4 +1,4 @@
-import { client } from './client'
+import { sanityFetch } from './fetch'
 import { activityByPathQuery } from './queries'
 
 /**
@@ -15,6 +15,9 @@ export function buildActivityHref(pathSegments: string[] | undefined): string {
  * ["japan", "hokkaido"]. The leaf slug must match an activity, and the
  * activity's ancestor chain (root → leaf) must equal the provided segments
  * minus the leaf. Returns null if no match.
+ *
+ * Uses sanityFetch so resolution honours Draft Mode — i.e. activities only
+ * present as drafts will resolve when previewing.
  */
 export async function resolveActivityByPath(segments: string[]) {
   if (segments.length === 0) return null
@@ -25,7 +28,10 @@ export async function resolveActivityByPath(segments: string[]) {
   // Fetch all candidates with this leaf slug. There may be more than one if
   // multiple parents have a child with the same slug — we'll disambiguate by
   // checking the ancestor chain.
-  const candidates: any[] = await client.fetch(activityByPathQuery, { leafSlug })
+  const candidates = await sanityFetch<any[]>({
+    query: activityByPathQuery,
+    params: { leafSlug },
+  })
 
   for (const activity of candidates ?? []) {
     const ancestorSlugs: string[] = (activity.ancestors ?? [])
