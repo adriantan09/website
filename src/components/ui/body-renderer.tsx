@@ -1,5 +1,6 @@
 import { PortableText, type PortableTextComponents } from '@portabletext/react'
-import { GalleryBlock, type GalleryLayout } from './gallery-block'
+import { PhotoGroup, type PhotoGroupPresentation } from './photo-group'
+import { MapEmbed } from './map-embed'
 
 const portableTextComponents: PortableTextComponents = {
   block: {
@@ -12,6 +13,15 @@ const portableTextComponents: PortableTextComponents = {
     h3: ({ children }) => (
       <h3 className="text-xl font-semibold tracking-tight mt-8 mb-3">{children}</h3>
     ),
+    h4: ({ children }) => (
+      <h4 className="text-lg font-semibold tracking-tight mt-6 mb-2">{children}</h4>
+    ),
+    h5: ({ children }) => (
+      <h5 className="text-base font-semibold tracking-tight mt-4 mb-2">{children}</h5>
+    ),
+    h6: ({ children }) => (
+      <h6 className="text-sm font-semibold tracking-tight mt-4 mb-1 uppercase tracking-widest text-muted-foreground">{children}</h6>
+    ),
     blockquote: ({ children }) => (
       <blockquote className="border-l-2 border-foreground/40 pl-4 my-6 italic text-muted-foreground">
         {children}
@@ -20,6 +30,22 @@ const portableTextComponents: PortableTextComponents = {
     normal: ({ children }) => (
       <p className="text-base md:text-lg leading-8 mb-5 text-foreground/90">{children}</p>
     ),
+  },
+  list: {
+    bullet: ({ children }) => (
+      <ul className="list-disc pl-6 mb-5 space-y-1 text-base md:text-lg leading-8 text-foreground/90">
+        {children}
+      </ul>
+    ),
+    number: ({ children }) => (
+      <ol className="list-decimal pl-6 mb-5 space-y-1 text-base md:text-lg leading-8 text-foreground/90">
+        {children}
+      </ol>
+    ),
+  },
+  listItem: {
+    bullet: ({ children }) => <li>{children}</li>,
+    number: ({ children }) => <li>{children}</li>,
   },
   marks: {
     link: ({ value, children }) => (
@@ -134,19 +160,34 @@ export function BodyRenderer({ body }: BodyRendererProps) {
           )
         }
 
-        if (block._type === 'galleryBlock') {
-          const layout = (block.layout as GalleryLayout) ?? 'grid-2'
+        if (block._type === 'photoGroup') {
+          const presentation =
+            (block.presentation as PhotoGroupPresentation) ?? 'justified'
           const images = (block.images as any[]) ?? []
           const caption = block.caption as string | undefined
+          const rowHeight = block.rowHeight as number | undefined
 
           const wrapperClass =
-            layout === 'full-bleed'
-              ? '' // GalleryBlock handles its own full-bleed expansion
+            presentation === 'full-bleed'
+              ? '' // PhotoGroup handles its own full-bleed sizing
               : 'max-w-5xl mx-auto px-4 md:px-0'
 
           return (
             <div key={group.key} className={wrapperClass}>
-              <GalleryBlock layout={layout} images={images} caption={caption} />
+              <PhotoGroup
+                presentation={presentation}
+                images={images}
+                caption={caption}
+                rowHeight={rowHeight}
+              />
+            </div>
+          )
+        }
+
+        if (block._type === 'mapEmbedBlock') {
+          return (
+            <div key={group.key} className="max-w-3xl mx-auto px-4 md:px-0">
+              <MapEmbed html={block.html as string} />
             </div>
           )
         }
