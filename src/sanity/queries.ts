@@ -16,6 +16,7 @@ const ACTIVITY_CARD_PROJECTION = `
   category,
   subCategory,
   date,
+  location,
   mainImage,
   keyStats,
   "childCount": count(childActivities),

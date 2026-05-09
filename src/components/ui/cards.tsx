@@ -7,31 +7,51 @@ export function ActivityCard({ activity }: { activity: any }) {
   const href = buildActivityHref(activity.pathSegments)
   const isContainer = (activity.childCount ?? 0) > 0
 
+  // Eyebrow text shown above the title in the overlay. Prefer the most
+  // specific bit of context we have: location > sub-category > category > year.
+  const eyebrow =
+    activity.location ||
+    activity.subCategory ||
+    activity.category ||
+    (activity.date ? String(new Date(activity.date).getFullYear()) : null)
+
   return (
     <Link href={href} className="group block">
-      <div className="relative aspect-[4/5] overflow-hidden bg-muted rounded-sm mb-4">
+      <div className="relative aspect-[4/3] overflow-hidden bg-muted rounded-2xl">
         {activity.mainImage && (
           <Image
-            src={urlFor(activity.mainImage).width(800).url()}
+            src={urlFor(activity.mainImage).width(1200).url()}
             alt={activity.mainImage?.alt || activity.title}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
           />
         )}
+
+        {/* Constant base shade for legibility across all images,
+            plus a stronger bottom gradient under the text. */}
+        <div className="absolute inset-0 bg-black/15 transition-colors duration-500 group-hover:bg-black/5" />
+        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+
         {isContainer && (
-          <div className="absolute top-3 left-3 px-2 py-1 bg-background/80 backdrop-blur-sm rounded-sm">
+          <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-white/15 text-white backdrop-blur-md ring-1 ring-white/25">
             <span className="text-[10px] uppercase tracking-[0.2em] font-semibold">
               {activity.childCount} activit{activity.childCount === 1 ? 'y' : 'ies'}
             </span>
           </div>
         )}
-      </div>
-      <div className="space-y-1">
-        <h3 className="text-sm font-medium tracking-tight uppercase">{activity.title}</h3>
-        <p className="text-xs text-muted-foreground">
-          {activity.date && new Date(activity.date).getFullYear()}
-          {activity.category && ` • ${activity.category}`}
-        </p>
+
+        {/* Title + subtitle overlay */}
+        <div className="absolute inset-x-0 bottom-0 p-5 md:p-6 text-white">
+          {eyebrow && (
+            <p className="text-[10px] md:text-xs uppercase tracking-[0.25em] font-semibold text-white/80 mb-1.5">
+              {eyebrow}
+            </p>
+          )}
+          <h3 className="text-lg md:text-xl font-semibold tracking-tight leading-tight drop-shadow-sm">
+            {activity.title}
+          </h3>
+        </div>
       </div>
     </Link>
   )
