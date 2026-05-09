@@ -11,6 +11,22 @@ export default defineType({
       type: 'string',
     }),
     defineField({
+      name: 'homeHeadline',
+      title: 'Home Headline',
+      type: 'text',
+      rows: 3,
+      description:
+        'Big H1 shown at the top of the home page. The portion wrapped in {{muted}}…{{/muted}} renders in a softer, muted colour. ' +
+        'e.g. "Exploring the outdoors through {{muted}}hiking, cycling, and photography.{{/muted}}"',
+    }),
+    defineField({
+      name: 'homeIntro',
+      title: 'Home Intro Paragraph',
+      type: 'text',
+      rows: 3,
+      description: 'Short paragraph shown below the headline on the home page.',
+    }),
+    defineField({
       name: 'authorBio',
       title: 'Author Bio',
       type: 'array',

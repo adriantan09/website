@@ -1,24 +1,70 @@
 import { sanityFetch } from '@/sanity/fetch'
-import { recentActivitiesQuery, projectsQuery } from '@/sanity/queries'
+import {
+  recentActivitiesQuery,
+  projectsQuery,
+  siteSettingsQuery,
+} from '@/sanity/queries'
 import { ActivityCard, ProjectCard } from '@/components/ui/cards'
 import Link from 'next/link'
 
+/**
+ * Splits the headline into segments wrapped in {{muted}}…{{/muted}} markers
+ * so the muted portion can render in a softer colour. Anything outside the
+ * markers is treated as the primary headline text.
+ */
+function renderHeadline(text: string) {
+  const parts: { text: string; muted: boolean }[] = []
+  const regex = /\{\{muted\}\}([\s\S]*?)\{\{\/muted\}\}/g
+  let lastIndex = 0
+  let match: RegExpExecArray | null
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push({ text: text.slice(lastIndex, match.index), muted: false })
+    }
+    parts.push({ text: match[1], muted: true })
+    lastIndex = match.index + match[0].length
+  }
+  if (lastIndex < text.length) {
+    parts.push({ text: text.slice(lastIndex), muted: false })
+  }
+  return parts.map((part, i) =>
+    part.muted ? (
+      <span key={i} className="text-muted-foreground">
+        {part.text}
+      </span>
+    ) : (
+      <span key={i}>{part.text}</span>
+    ),
+  )
+}
+
 export default async function Home() {
-  const activities = await sanityFetch<any[]>({ query: recentActivitiesQuery })
-  const projects = await sanityFetch<any[]>({ query: projectsQuery })
+  const [activities, projects, settings] = await Promise.all([
+    sanityFetch<any[]>({ query: recentActivitiesQuery }),
+    sanityFetch<any[]>({ query: projectsQuery }),
+    sanityFetch<any>({ query: siteSettingsQuery }),
+  ])
+
+  const headline = settings?.homeHeadline as string | undefined
+  const intro = settings?.homeIntro as string | undefined
 
   return (
     <div className="container py-12 md:py-24">
-      {/* Hero Section */}
-      <section className="max-w-3xl mb-24">
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-6 leading-tight">
-          Exploring the outdoors through <span className="text-muted-foreground">hiking, cycling, and photography.</span>
-        </h1>
-        <p className="text-lg text-muted-foreground leading-relaxed">
-          I'm Adrian Tan, a software engineer and outdoor enthusiast documenting my journeys 
-          across trails and roads.
-        </p>
-      </section>
+      {/* Hero Section — only rendered if Site Settings has the copy */}
+      {(headline || intro) && (
+        <section className="max-w-3xl mb-24">
+          {headline && (
+            <h1 className="text-2xl md:text-4xl font-bold tracking-tighter mb-5 leading-tight">
+              {renderHeadline(headline)}
+            </h1>
+          )}
+          {intro && (
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed whitespace-pre-line">
+              {intro}
+            </p>
+          )}
+        </section>
+      )}
 
       {/* Activities Grid */}
       <section className="mb-24">
