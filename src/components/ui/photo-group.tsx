@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { RowsPhotoAlbum } from 'react-photo-album'
 import 'react-photo-album/rows.css'
 import Lightbox from 'yet-another-react-lightbox'
@@ -41,6 +41,11 @@ export function PhotoGroup({
   rowHeight = 320,
 }: PhotoGroupProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number>(-1)
+  // RowsPhotoAlbum reads `window` during render to measure the container,
+  // which crashes on the server. Defer rendering it until after mount so
+  // SSR ships a stable HTML shell and the album hydrates client-side.
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
   const photos = useMemo(
     () =>
@@ -91,12 +96,20 @@ export function PhotoGroup({
           images={images}
           onClick={(i) => setLightboxIndex(i)}
         />
-      ) : (
+      ) : mounted ? (
         <RowsPhotoAlbum
           photos={photos}
           targetRowHeight={rowHeight}
           spacing={6}
           onClick={({ index }) => setLightboxIndex(index)}
+        />
+      ) : (
+        // SSR placeholder — reserves vertical space so the layout doesn't
+        // jump when the album hydrates and renders for real.
+        <div
+          aria-hidden
+          style={{ height: rowHeight }}
+          className="bg-muted/30 rounded-sm"
         />
       )}
 
