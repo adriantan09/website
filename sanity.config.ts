@@ -30,12 +30,12 @@ export default defineConfig({
      * via the /api/draft endpoint.
      *
      * Editors hit a "Open preview" eye icon on any document to launch it.
+     * /api/draft validates the user's Studio session via next-sanity's
+     * `defineEnableDraftMode` (no shared secret needed).
      */
     presentationTool({
       previewUrl: {
         origin: SITE_URL,
-        // Sanity sends the user to /api/draft?slug=... which enables Draft
-        // Mode (using SANITY_PREVIEW_SECRET) and redirects to the slug.
         draftMode: {
           enable: '/api/draft',
         },
