@@ -53,7 +53,7 @@ export default async function ActivityDetail({ params }: Props) {
         )}
 
         {/* Hero Image with title overlay — constrained to content width */}
-        <header className="relative w-full aspect-[3/2] md:aspect-[16/9] bg-muted overflow-hidden rounded-xl">
+        <header className="relative w-full aspect-[3/2] md:aspect-[16/9] bg-muted overflow-hidden rounded-2xl">
           {activity.mainImage && (
             <Image
               src={urlFor(activity.mainImage).width(2000).url()}

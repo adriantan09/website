@@ -7,7 +7,7 @@ export function MapEmbed({ html }: MapEmbedProps) {
 
   return (
     <div
-      className="my-12 w-full [&_iframe]:w-full [&_iframe]:rounded-sm [&_iframe]:border [&_iframe]:border-border"
+      className="my-12 w-full [&_iframe]:w-full [&_iframe]:rounded-2xl [&_iframe]:border [&_iframe]:border-border"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   )

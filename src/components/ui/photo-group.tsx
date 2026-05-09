@@ -102,6 +102,18 @@ export function PhotoGroup({
           targetRowHeight={rowHeight}
           spacing={6}
           onClick={({ index }) => setLightboxIndex(index)}
+          render={{
+            // Round each photo so the gallery matches the rest of the
+            // site's image rounding.
+            image: (props, { photo }) => (
+              // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
+              <img
+                {...props}
+                alt={photo.alt}
+                className="rounded-2xl"
+              />
+            ),
+          }}
         />
       ) : (
         // SSR placeholder — reserves vertical space so the layout doesn't
@@ -109,7 +121,7 @@ export function PhotoGroup({
         <div
           aria-hidden
           style={{ height: rowHeight }}
-          className="bg-muted/30 rounded-sm"
+          className="bg-muted/30 rounded-2xl"
         />
       )}
 
@@ -155,7 +167,7 @@ function FullBleedStack({
             key={image._key || index}
             type="button"
             onClick={() => onClick(index)}
-            className="block w-full cursor-zoom-in overflow-hidden bg-muted"
+            className="block w-full cursor-zoom-in overflow-hidden bg-muted rounded-2xl"
             aria-label={image.alt || `Open photo ${index + 1}`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}

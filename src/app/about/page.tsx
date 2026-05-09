@@ -10,7 +10,7 @@ export default async function AboutPage() {
   return (
     <div className="container py-24">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-        <div className="relative aspect-[3/4] bg-muted overflow-hidden rounded-sm">
+        <div className="relative aspect-square bg-muted overflow-hidden rounded-2xl w-full max-w-xs">
           {settings?.authorImage ? (
             <Image
               src={urlFor(settings.authorImage).width(1200).url()}
