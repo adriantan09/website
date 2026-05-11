@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
-import { Header } from '@/components/layout/header'
-import { Footer } from '@/components/layout/footer'
 import { DraftModeBanner } from '@/components/ui/draft-mode-banner'
 import { VisualEditingLoader } from '@/components/visual-editing-loader'
 
@@ -11,6 +9,11 @@ export const metadata: Metadata = {
   description: 'A collection of hikes, cycling adventures, and photography.',
 }
 
+/**
+ * Root layout: the bare-minimum HTML shell that every route inherits.
+ * The site chrome (header/footer) lives in `(site)/layout.tsx` so the
+ * admin route (Sanity Studio) gets the full viewport without it.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -25,11 +28,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-grow">{children}</main>
-            <Footer />
-          </div>
+          {children}
           <DraftModeBanner />
           <VisualEditingLoader />
         </ThemeProvider>
