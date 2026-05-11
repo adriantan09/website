@@ -1,5 +1,6 @@
 import { PortableText, type PortableTextComponents } from '@portabletext/react'
 import { PhotoGroup, type PhotoGroupPresentation } from './photo-group'
+import { PhotoLightboxProvider } from './photo-lightbox-provider'
 import { MapEmbed } from './map-embed'
 
 const portableTextComponents: PortableTextComponents = {
@@ -104,96 +105,120 @@ export function BodyRenderer({ body }: BodyRendererProps) {
   })
 
   return (
-    <div className="activity-body">
-      {groups.map((group) => {
-        if (group.kind === 'text') {
-          return (
-            <div key={group.key} className="max-w-3xl mx-auto px-4 md:px-0">
-              <PortableText
-                value={group.blocks as never}
-                components={portableTextComponents}
-              />
-            </div>
-          )
-        }
+    <PhotoLightboxProvider>
+      <div className="activity-body">
+        {groups.map((group) => {
+          if (group.kind === 'text') {
+            return (
+              <div key={group.key} className="max-w-3xl mx-auto px-4 md:px-0">
+                <PortableText
+                  value={group.blocks as never}
+                  components={portableTextComponents}
+                />
+              </div>
+            )
+          }
 
-        const block = group.block
+          const block = group.block
 
-        if (block._type === 'sectionHeadingBlock') {
-          const heading = block.heading as string
-          const subheading = block.subheading as string | undefined
-          const anchor = block.anchor as string | undefined
-          return (
-            <section
-              key={group.key}
-              id={anchor}
-              className="max-w-3xl mx-auto px-4 md:px-0 mt-20 mb-8 scroll-mt-24"
-            >
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tighter">
-                {heading}
-              </h2>
-              {subheading && (
-                <p className="mt-3 text-lg text-muted-foreground">{subheading}</p>
-              )}
-              <div className="mt-6 h-px w-12 bg-foreground/30" />
-            </section>
-          )
-        }
+          if (block._type === 'sectionHeadingBlock') {
+            const heading = block.heading as string
+            const subheading = block.subheading as string | undefined
+            const anchor = block.anchor as string | undefined
+            return (
+              <section
+                key={group.key}
+                id={anchor}
+                className="max-w-3xl mx-auto px-4 md:px-0 mt-20 mb-8 scroll-mt-24"
+              >
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tighter">
+                  {heading}
+                </h2>
+                {subheading && (
+                  <p className="mt-3 text-lg text-muted-foreground">{subheading}</p>
+                )}
+                <div className="mt-6 h-px w-12 bg-foreground/30" />
+              </section>
+            )
+          }
 
-        if (block._type === 'pullQuoteBlock') {
-          const quote = block.quote as string
-          const attribution = block.attribution as string | undefined
-          return (
-            <blockquote
-              key={group.key}
-              className="max-w-3xl mx-auto px-4 md:px-0 my-12 border-l-2 border-foreground pl-6"
-            >
-              <p className="text-2xl md:text-3xl font-medium leading-snug tracking-tight">
-                “{quote}”
-              </p>
-              {attribution && (
-                <footer className="mt-3 text-sm uppercase tracking-[0.2em] text-muted-foreground">
-                  — {attribution}
-                </footer>
-              )}
-            </blockquote>
-          )
-        }
+          if (block._type === 'pullQuoteBlock') {
+            const quote = block.quote as string
+            const attribution = block.attribution as string | undefined
+            return (
+              <blockquote
+                key={group.key}
+                className="max-w-3xl mx-auto px-4 md:px-0 my-12 border-l-2 border-foreground pl-6"
+              >
+                <p className="text-2xl md:text-3xl font-medium leading-snug tracking-tight">
+                  “{quote}”
+                </p>
+                {attribution && (
+                  <footer className="mt-3 text-sm uppercase tracking-[0.2em] text-muted-foreground">
+                    — {attribution}
+                  </footer>
+                )}
+              </blockquote>
+            )
+          }
 
-        if (block._type === 'photoGroup') {
-          const presentation =
-            (block.presentation as PhotoGroupPresentation) ?? 'justified'
-          const images = (block.images as any[]) ?? []
-          const caption = block.caption as string | undefined
-          const rowHeight = block.rowHeight as number | undefined
+          if (block._type === 'photoGroup') {
+            const presentation =
+              (block.presentation as PhotoGroupPresentation) ?? 'justified'
+            const images = (block.images as any[]) ?? []
+            const caption = block.caption as string | undefined
+            const rowHeight = block.rowHeight as number | undefined
 
-          const wrapperClass =
-            presentation === 'full-bleed'
-              ? '' // PhotoGroup handles its own full-bleed sizing
-              : 'max-w-5xl mx-auto px-4 md:px-0'
+            const wrapperClass =
+              presentation === 'full-bleed'
+                ? '' // PhotoGroup handles its own full-bleed sizing
+                : 'max-w-3xl mx-auto px-4 md:px-0'
 
-          return (
-            <div key={group.key} className={wrapperClass}>
-              <PhotoGroup
-                presentation={presentation}
-                images={images}
-                caption={caption}
-                rowHeight={rowHeight}
-              />
-            </div>
-          )
-        }
+            return (
+              <div key={group.key} className={wrapperClass}>
+                <PhotoGroup
+                  presentation={presentation}
+                  images={images}
+                  caption={caption}
+                  rowHeight={rowHeight}
+                />
+              </div>
+            )
+          }
 
-        if (block._type === 'mapEmbedBlock') {
-          return (
-            <div key={group.key} className="max-w-3xl mx-auto px-4 md:px-0">
-              <MapEmbed html={block.html as string} />
-            </div>
-          )
-        }
+          if (block._type === 'mapEmbedBlock') {
+            return (
+              <div key={group.key} className="max-w-3xl mx-auto px-4 md:px-0">
+                <MapEmbed html={block.html as string} />
+              </div>
+            )
+          }
 
-        return null
-      })}
-    </div>
+          if (block._type === 'dividerBlock') {
+            const style = (block.style as string) ?? 'line'
+            return (
+              <div
+                key={group.key}
+                className="max-w-3xl mx-auto px-4 md:px-0 my-8 md:my-12"
+                role="separator"
+                aria-hidden
+              >
+                {style === 'dots' ? (
+                  <div className="flex justify-center gap-3 text-muted-foreground/60">
+                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-current" />
+                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-current" />
+                    <span className="inline-block h-1.5 w-1.5 rounded-full bg-current" />
+                  </div>
+                ) : (
+                  <hr className="border-0 h-px bg-border" />
+                )}
+              </div>
+            )
+          }
+
+          return null
+        })}
+      </div>
+    </PhotoLightboxProvider>
   )
 }

@@ -1,11 +1,10 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { RowsPhotoAlbum } from 'react-photo-album'
 import 'react-photo-album/rows.css'
-import Lightbox from 'yet-another-react-lightbox'
-import 'yet-another-react-lightbox/styles.css'
 import { urlFor } from '@/sanity/client'
+import { useGroupLightbox } from './photo-lightbox-provider'
 
 export type PhotoGroupPresentation = 'justified' | 'full-bleed'
 
@@ -31,8 +30,9 @@ interface PhotoGroupProps {
  *     height and fills the container width, regardless of image count.
  *   - "full-bleed" — edge-to-edge stacked at their natural aspect ratio.
  *
- * Clicking any image opens a lightbox with keyboard/swipe navigation.
- * Zoom is intentionally disabled per design preference.
+ * The lightbox is owned by the page-wide PhotoLightboxProvider so the user
+ * can scroll through every photo on the page (across all photo groups) in
+ * a single continuous carousel rather than being trapped in one group.
  */
 export function PhotoGroup({
   presentation,
@@ -40,10 +40,6 @@ export function PhotoGroup({
   caption,
   rowHeight = 320,
 }: PhotoGroupProps) {
-  const [lightboxIndex, setLightboxIndex] = useState<number>(-1)
-  // RowsPhotoAlbum reads `window` during render to measure the container,
-  // which crashes on the server. Defer rendering it until after mount so
-  // SSR ships a stable HTML shell and the album hydrates client-side.
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
 
@@ -53,7 +49,6 @@ export function PhotoGroup({
         .map((img, i) => {
           const width = img.dimensions?.width ?? 1600
           const height = img.dimensions?.height ?? 1067
-          // Mid-size for layout thumbnails; lightbox uses a larger src below.
           const src = img.asset
             ? urlFor(img as any).width(1600).url()
             : img.url ?? ''
@@ -87,24 +82,21 @@ export function PhotoGroup({
     [images]
   )
 
+  const { openLocal } = useGroupLightbox(lightboxSlides)
+
   if (photos.length === 0) return null
 
   return (
     <figure className={presentation === 'full-bleed' ? 'my-16 md:my-24' : 'my-12 md:my-16'}>
       {presentation === 'full-bleed' ? (
-        <FullBleedStack
-          images={images}
-          onClick={(i) => setLightboxIndex(i)}
-        />
+        <FullBleedStack images={images} onClick={openLocal} />
       ) : mounted ? (
         <RowsPhotoAlbum
           photos={photos}
           targetRowHeight={rowHeight}
           spacing={6}
-          onClick={({ index }) => setLightboxIndex(index)}
+          onClick={({ index }) => openLocal(index)}
           render={{
-            // Round each photo so the gallery matches the rest of the
-            // site's image rounding.
             image: (props, { photo }) => (
               // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
               <img
@@ -130,17 +122,6 @@ export function PhotoGroup({
           {caption}
         </figcaption>
       )}
-
-      <Lightbox
-        open={lightboxIndex >= 0}
-        index={lightboxIndex}
-        close={() => setLightboxIndex(-1)}
-        slides={lightboxSlides}
-        controller={{ closeOnBackdropClick: true }}
-        styles={{
-          container: { backgroundColor: 'rgba(15, 15, 15, 0.85)', backdropFilter: 'blur(8px)' },
-        }}
-      />
     </figure>
   )
 }
