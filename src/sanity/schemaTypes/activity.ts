@@ -126,6 +126,7 @@ export default defineType({
         { type: 'photoGroup' },
         { type: 'mapEmbedBlock' },
         { type: 'pullQuoteBlock' },
+        { type: 'dividerBlock' },
       ],
     }),
   ],

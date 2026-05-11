@@ -5,6 +5,7 @@ import photoGroupBlock from './blocks/photoGroupBlock'
 import sectionHeadingBlock from './blocks/sectionHeadingBlock'
 import pullQuoteBlock from './blocks/pullQuoteBlock'
 import mapEmbedBlock from './blocks/mapEmbedBlock'
+import dividerBlock from './blocks/dividerBlock'
 
 export const schemaTypes = [
   activity,
@@ -14,4 +15,5 @@ export const schemaTypes = [
   sectionHeadingBlock,
   pullQuoteBlock,
   mapEmbedBlock,
+  dividerBlock,
 ]
