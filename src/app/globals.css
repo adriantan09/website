@@ -83,3 +83,20 @@ body {
     padding-inline: 1rem;
   }
 }
+
+/*
+ * `react-photo-album` wraps each tessellated photo in a <button>. By
+ * default the focus ring traces the button's rectangular bounds, while
+ * the inner <img> is rounded with Tailwind's `rounded-2xl` — so the ring
+ * looks misaligned. Match the button's border-radius to the image and
+ * provide a visible focus-ring that follows the same curve.
+ */
+.react-photo-album--button {
+  border-radius: 1rem; /* matches Tailwind rounded-2xl */
+  outline: none;
+}
+
+.react-photo-album--button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

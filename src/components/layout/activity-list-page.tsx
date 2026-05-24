@@ -8,13 +8,13 @@ interface Props {
 
 export function ActivityListPage({ title, description, activities }: Props) {
   return (
-    <div className="container py-24">
-      <header className="max-w-3xl mb-16">
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tighter mb-4">
+    <div className="container pt-6 pb-12 md:pt-10 md:pb-24">
+      <header className="max-w-3xl mb-10 md:mb-12">
+        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight mb-3">
           {title}
         </h1>
         {description && (
-          <p className="text-lg text-muted-foreground leading-relaxed">
+          <p className="text-base text-muted-foreground leading-relaxed">
             {description}
           </p>
         )}

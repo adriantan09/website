@@ -11,28 +11,27 @@ export default defineType({
       type: 'string',
     }),
     defineField({
-      name: 'homeHeadline',
-      title: 'Home Headline',
-      type: 'text',
-      rows: 3,
-      description:
-        'Big H1 shown at the top of the home page. The portion wrapped in {{muted}}…{{/muted}} renders in a softer, muted colour. ' +
-        'e.g. "Exploring the outdoors through {{muted}}hiking, cycling, and photography.{{/muted}}"',
-    }),
-    defineField({
-      name: 'homeIntro',
-      title: 'Home Intro Paragraph',
-      type: 'text',
-      rows: 3,
-      description: 'Short paragraph shown below the headline on the home page.',
-    }),
-    defineField({
       name: 'homePortfolio',
       title: 'Home Portfolio',
       description:
         'Curated photos displayed in the tessellated gallery on the home page. Drag to reorder — order here determines display order on the site.',
       type: 'array',
       of: [{ type: 'portfolioImage' }],
+    }),
+    defineField({
+      name: 'postsTitle',
+      title: 'Posts Page Title',
+      type: 'string',
+      description:
+        'Heading shown at the top of the /posts page. Defaults to "Posts" if empty.',
+    }),
+    defineField({
+      name: 'postsDescription',
+      title: 'Posts Page Description',
+      type: 'text',
+      rows: 2,
+      description:
+        'Short paragraph shown under the heading on the /posts page. Leave empty to hide.',
     }),
     defineField({
       name: 'authorBio',

@@ -2,7 +2,7 @@ import { Navigation } from '@/components/layout/navigation'
 
 /**
  * Layout for the public-facing site. Wraps every public route group
- * (`/`, `/about`, `/cycling`, `/hiking`, `/travel`, `/[...path]`) with
+ * (`/`, `/posts`, `/cycling`, `/hiking`, `/travel`, `/[...path]`) with
  * the shared site chrome.
  *
  * Chrome is intentionally minimal: a single navigation element that sits

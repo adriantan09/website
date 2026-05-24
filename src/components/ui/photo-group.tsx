@@ -22,6 +22,8 @@ interface PhotoGroupProps {
   images: SanityImage[]
   caption?: string
   rowHeight?: number
+  /** Pixel gap between tiles in the justified layout. */
+  spacing?: number
   /**
    * Optional override for the outer <figure> classes. Pass `''` (empty) to
    * strip the default vertical margins when the group is rendered as a
@@ -46,6 +48,7 @@ export function PhotoGroup({
   images,
   caption,
   rowHeight = 320,
+  spacing = 6,
   className,
 }: PhotoGroupProps) {
   const [mounted, setMounted] = useState(false)
@@ -107,7 +110,7 @@ export function PhotoGroup({
         <RowsPhotoAlbum
           photos={photos}
           targetRowHeight={rowHeight}
-          spacing={6}
+          spacing={spacing}
           onClick={({ index }) => openLocal(index)}
           render={{
             image: (props, { photo }) => (
