@@ -28,21 +28,24 @@ export function ActivityCard({ activity }: { activity: any }) {
           />
         )}
 
-        {/* Constant base shade for legibility across all images,
-            plus a stronger bottom gradient under the text. */}
-        <div className="absolute inset-0 bg-black/15 transition-colors duration-500 group-hover:bg-black/5" />
-        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+        {/* Hover-only overlay: a soft bottom gradient that fades in/out
+            gradually behind the title + eyebrow. The image itself is shown
+            unobstructed at rest. */}
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/85 via-black/40 to-transparent opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100"
+          aria-hidden="true"
+        />
 
         {isContainer && (
-          <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-white/15 text-white backdrop-blur-md ring-1 ring-white/25">
+          <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-white/15 text-white backdrop-blur-md ring-1 ring-white/25 opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100">
             <span className="text-[10px] uppercase tracking-[0.2em] font-semibold">
               {activity.childCount} activit{activity.childCount === 1 ? 'y' : 'ies'}
             </span>
           </div>
         )}
 
-        {/* Title + subtitle overlay */}
-        <div className="absolute inset-x-0 bottom-0 p-5 md:p-6 text-white">
+        {/* Title + eyebrow — hidden at rest, fade and rise on hover. */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 p-5 md:p-6 text-white opacity-0 translate-y-2 transition-all duration-500 ease-out group-hover:opacity-100 group-hover:translate-y-0">
           {eyebrow && (
             <p className="text-[10px] md:text-xs uppercase tracking-[0.25em] font-semibold text-white/80 mb-1.5">
               {eyebrow}

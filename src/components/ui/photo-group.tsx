@@ -22,6 +22,13 @@ interface PhotoGroupProps {
   images: SanityImage[]
   caption?: string
   rowHeight?: number
+  /**
+   * Optional override for the outer <figure> classes. Pass `''` (empty) to
+   * strip the default vertical margins when the group is rendered as a
+   * standalone gallery (e.g. on the home page) rather than between body
+   * sections in a post.
+   */
+  className?: string
 }
 
 /**
@@ -39,6 +46,7 @@ export function PhotoGroup({
   images,
   caption,
   rowHeight = 320,
+  className,
 }: PhotoGroupProps) {
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
@@ -87,7 +95,12 @@ export function PhotoGroup({
   if (photos.length === 0) return null
 
   return (
-    <figure className={presentation === 'full-bleed' ? 'my-16 md:my-24' : 'my-12 md:my-16'}>
+    <figure
+      className={
+        className ??
+        (presentation === 'full-bleed' ? 'my-16 md:my-24' : 'my-12 md:my-16')
+      }
+    >
       {presentation === 'full-bleed' ? (
         <FullBleedStack images={images} onClick={openLocal} />
       ) : mounted ? (

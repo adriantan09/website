@@ -55,6 +55,29 @@ export function PhotoLightboxProvider({ children }: { children: React.ReactNode 
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
 
+  // While the lightbox is open we want to:
+  //  1. Stop the page from scrolling underneath the modal.
+  //  2. Keep the page's visible content at exactly the same horizontal
+  //     position so the user doesn't see a sideways jump on open/close.
+  //
+  // We use `overflow: hidden` on <html> to lock scrolling. The global
+  // `scrollbar-gutter: stable` rule on <html> stays in effect — that means
+  // even though scrolling is locked, the browser keeps the gutter reserved
+  // and the layout width remains exactly the same as before opening.
+  useEffect(() => {
+    if (openIndex < 0) return
+    if (typeof document === 'undefined') return
+
+    const html = document.documentElement
+    const previousOverflow = html.style.overflow
+
+    html.style.overflow = 'hidden'
+
+    return () => {
+      html.style.overflow = previousOverflow
+    }
+  }, [openIndex])
+
   const register = useCallback((id: string, slides: SlideImage[]) => {
     const groups = groupsRef.current
     const existing = groups.findIndex((g) => g.id === id)
@@ -117,6 +140,12 @@ export function PhotoLightboxProvider({ children }: { children: React.ReactNode 
           close={() => setOpenIndex(-1)}
           slides={allSlides}
           controller={{ closeOnBackdropClick: true }}
+          // Opt out of the library's own body scroll lock — its padding
+          // compensation interacts badly with our global
+          // `scrollbar-gutter: stable` rule and causes the page width to
+          // shift on open/close. We manage the lock ourselves via the
+          // effect above.
+          noScroll={{ disabled: true }}
           styles={{
             container: {
               backgroundColor: 'rgba(15, 15, 15, 0.85)',

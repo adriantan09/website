@@ -52,8 +52,9 @@ export default async function ActivityDetail({ params }: Props) {
           </nav>
         )}
 
-        {/* Hero Image with title overlay — constrained to content width */}
-        <header className="relative w-full aspect-[3/2] md:aspect-[16/9] bg-muted overflow-hidden rounded-2xl">
+        {/* Hero Image with title overlay — spans the full container width
+            so its edges line up with the navigation bar above. */}
+        <header className="relative w-full aspect-[16/9] bg-muted overflow-hidden rounded-2xl">
           {activity.mainImage && (
             <Image
               src={urlFor(activity.mainImage).width(2000).url()}
@@ -61,21 +62,21 @@ export default async function ActivityDetail({ params }: Props) {
               fill
               className="object-cover"
               priority
-              sizes="(max-width: 1100px) 100vw, 1100px"
+              sizes="(max-width: 1152px) 100vw, 1152px"
             />
           )}
           {/* Bottom gradient for legibility */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-          <div className="absolute bottom-0 left-0 w-full p-6 md:p-10 text-white">
-            <div className="max-w-3xl">
-              <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.3em] mb-3 text-white/80">
+          <div className="absolute bottom-0 left-0 w-full p-5 md:p-8 text-white">
+            <div className="max-w-2xl">
+              <p className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.3em] mb-2 text-white/80">
                 {activity.category && <>{activity.category}</>}
                 {activity.subCategory && ` • ${activity.subCategory}`}
                 {activity.location && `${activity.category ? ' • ' : ''}${activity.location}`}
                 {!activity.category && !activity.location && isContainer && 'Trip'}
               </p>
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tighter leading-[1.05] text-white drop-shadow-sm">
+              <h1 className="text-2xl md:text-4xl font-bold tracking-tighter leading-[1.05] text-white drop-shadow-sm">
                 {activity.title}
               </h1>
             </div>

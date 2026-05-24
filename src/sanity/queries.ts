@@ -49,6 +49,50 @@ export const recentActivitiesQuery = groq`*[
   ${ACTIVITY_CARD_PROJECTION}
 }`
 
+// All top-level activities (no parent) for the /posts index page.
+export const allTopLevelActivitiesQuery = groq`*[
+  _type == "activity" &&
+  count(*[_type == "activity" && references(^._id)]) == 0
+] | order(date desc) {
+  ${ACTIVITY_CARD_PROJECTION}
+}`
+
+/**
+ * Every gallery image across every activity, flattened into a single list
+ * for a site-wide photo wall on the home page. Newest activities first; the
+ * mainImage is included before each activity's photoGroup blocks so the
+ * lead photo for a post is always present in the tessellation.
+ */
+export const allGalleryPhotosQuery = groq`*[_type == "activity"] | order(date desc) {
+  _id,
+  title,
+  slug,
+  date,
+  mainImage {
+    ...,
+    "url": asset->url,
+    "dimensions": asset->metadata.dimensions
+  },
+  "photoGroups": body[_type == "photoGroup"]{
+    images[]{
+      ...,
+      "url": asset->url,
+      "dimensions": asset->metadata.dimensions
+    }
+  }
+}`
+
+/**
+ * Curated images for the home-page tessellated gallery. Sourced from the
+ * `homePortfolio` array on the singleton `siteSettings` document, in the
+ * order they're arranged in Sanity Studio.
+ */
+export const homePortfolioPhotosQuery = groq`*[_type == "siteSettings"][0].homePortfolio[]{
+  ...,
+  "url": asset->url,
+  "dimensions": asset->metadata.dimensions
+}`
+
 /**
  * Resolve an activity by its full URL path (array of slug segments).
  *

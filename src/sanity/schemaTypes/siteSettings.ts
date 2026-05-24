@@ -27,6 +27,14 @@ export default defineType({
       description: 'Short paragraph shown below the headline on the home page.',
     }),
     defineField({
+      name: 'homePortfolio',
+      title: 'Home Portfolio',
+      description:
+        'Curated photos displayed in the tessellated gallery on the home page. Drag to reorder — order here determines display order on the site.',
+      type: 'array',
+      of: [{ type: 'portfolioImage' }],
+    }),
+    defineField({
       name: 'authorBio',
       title: 'Author Bio',
       type: 'array',
