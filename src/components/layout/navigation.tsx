@@ -157,18 +157,14 @@ function NavButton({
 }
 
 export function Navigation() {
-  const { theme, setTheme } = useTheme()
+  const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => setMounted(true), [])
 
-  const isDark = theme === 'dark'
-  const ThemeIcon = mounted ? (isDark ? Sun : Moon) : Sun
-  const themeLabel = mounted
-    ? isDark
-      ? 'Light mode'
-      : 'Dark mode'
-    : 'Toggle theme'
+  const isDark = resolvedTheme === 'dark'
+  const ThemeIcon = isDark ? Sun : Moon
+  const themeLabel = isDark ? 'Light mode' : 'Dark mode'
 
   return (
     <nav
@@ -195,12 +191,14 @@ export function Navigation() {
             Icon={item.Icon}
           />
         ))}
-        <NavButton
-          label={themeLabel}
-          Icon={ThemeIcon}
-          ariaLabel="Toggle color theme"
-          onClick={() => setTheme(isDark ? 'light' : 'dark')}
-        />
+        {mounted && (
+          <NavButton
+            label={themeLabel}
+            Icon={ThemeIcon}
+            ariaLabel="Toggle color theme"
+            onClick={() => setTheme(isDark ? 'light' : 'dark')}
+          />
+        )}
       </div>
     </nav>
   )
