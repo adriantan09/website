@@ -11,6 +11,7 @@
   "dependencies": {
     "@sanity/image-url": "^2.1.1",
     "@sanity/visual-editing": "^5.3.4",
+    "@vercel/speed-insights": "^2.0.0",
     "clsx": "^2.1.1",
     "lucide-react": "^1.14.0",
     "next": "16.2.4",

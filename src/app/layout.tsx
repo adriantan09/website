@@ -3,6 +3,7 @@ import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { DraftModeBanner } from '@/components/ui/draft-mode-banner'
 import { VisualEditingLoader } from '@/components/visual-editing-loader'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 export const metadata: Metadata = {
   title: 'Adrian Tan | Activities Portfolio',
@@ -31,6 +32,7 @@ export default function RootLayout({
           {children}
           <DraftModeBanner />
           <VisualEditingLoader />
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>
